@@ -45,4 +45,8 @@
                                    limit:(NSUInteger)lim
                                    completion:(void (^)(NSArray *, NSError *))completion;
 
+
+- (void)fetchWorkoutSamplesForPredicate:(NSPredicate *)predicate
+                                        limit:(NSUInteger)lim
+                                   completion:(void (^)(NSArray *, NSError *))completion;
 @end
