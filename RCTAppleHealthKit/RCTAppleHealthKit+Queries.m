@@ -151,7 +151,7 @@
                     NSString *endDateString = [RCTAppleHealthKit buildISO8601StringFromDate:sample.endDate];
 
                     NSString *valueString;
-
+                    
                     switch (val) {
                       case HKCategoryValueSleepAnalysisInBed:
                         valueString = @"INBED";
@@ -410,7 +410,7 @@
 
                                            NSString *startDateString = [RCTAppleHealthKit buildISO8601StringFromDate:startDate];
                                            NSString *endDateString = [RCTAppleHealthKit buildISO8601StringFromDate:endDate];
-
+                                           
                                            NSDictionary *elem = @{
                                                    @"value" : @(value),
                                                    @"startDate" : startDateString,
@@ -436,5 +436,156 @@
 
     [self.healthStore executeQuery:query];
 }
+
+
+- (NSDictionary *) workoutActivityTypeDict {
+    NSDictionary *workoutActivities = @{
+                                        @(HKWorkoutActivityTypeAmericanFootball): @"AmericanFootball",
+                                        @(HKWorkoutActivityTypeArchery): @"Archery",
+                                        @(HKWorkoutActivityTypeAustralianFootball): @"AustralianFootball",
+                                        @(HKWorkoutActivityTypeBadminton): @"Badminton",
+                                        @(HKWorkoutActivityTypeBaseball): @"Baseball",
+                                        @(HKWorkoutActivityTypeBasketball): @"Basketball",
+                                        @(HKWorkoutActivityTypeBowling): @"Bowling",
+                                        @(HKWorkoutActivityTypeBoxing): @"Boxing",
+                                        @(HKWorkoutActivityTypeClimbing): @"Climbing",
+                                        @(HKWorkoutActivityTypeCricket): @"Cricket",
+                                        @(HKWorkoutActivityTypeCrossTraining): @"CrossTraining",
+                                        @(HKWorkoutActivityTypeCurling): @"Curling",
+                                        @(HKWorkoutActivityTypeCycling): @"Cycling",
+                                        @(HKWorkoutActivityTypeDance): @"Dance",
+                                        @(HKWorkoutActivityTypeElliptical): @"Elliptical",
+                                        @(HKWorkoutActivityTypeEquestrianSports): @"EquestrianSports",
+                                        @(HKWorkoutActivityTypeFencing): @"Fencing",
+                                        @(HKWorkoutActivityTypeFishing): @"Fishing",
+                                        @(HKWorkoutActivityTypeFunctionalStrengthTraining): @"FunctionalStrengthTraining",
+                                        @(HKWorkoutActivityTypeGolf): @"Golf",
+                                        @(HKWorkoutActivityTypeGymnastics): @"Gymnastics",
+                                        @(HKWorkoutActivityTypeHandball): @"Handball",
+                                        @(HKWorkoutActivityTypeHiking): @"Hiking",
+                                        @(HKWorkoutActivityTypeHockey): @"Hockey",
+                                        @(HKWorkoutActivityTypeHunting): @"Hunting",
+                                        @(HKWorkoutActivityTypeLacrosse): @"Lacrosse",
+                                        @(HKWorkoutActivityTypeMartialArts): @"MartialArts",
+                                        @(HKWorkoutActivityTypeMindAndBody): @"MindAndBody",
+                                        @(HKWorkoutActivityTypePaddleSports): @"PaddleSports",
+                                        @(HKWorkoutActivityTypePlay): @"Play",
+                                        @(HKWorkoutActivityTypePreparationAndRecovery): @"PreparationAndRecovery",
+                                        @(HKWorkoutActivityTypeRacquetball): @"Racquetball",
+                                        @(HKWorkoutActivityTypeRowing): @"Rowing",
+                                        @(HKWorkoutActivityTypeRugby): @"Rugby",
+                                        @(HKWorkoutActivityTypeRunning): @"Running",
+                                        @(HKWorkoutActivityTypeSailing): @"Sailing",
+                                        @(HKWorkoutActivityTypeSkatingSports): @"SkatingSports",
+                                        @(HKWorkoutActivityTypeSnowSports): @"SnowSports",
+                                        @(HKWorkoutActivityTypeSoccer): @"Soccer",
+                                        @(HKWorkoutActivityTypeSoftball): @"Softball",
+                                        @(HKWorkoutActivityTypeSquash): @"Squash",
+                                        @(HKWorkoutActivityTypeStairClimbing): @"StairClimbing",
+                                        @(HKWorkoutActivityTypeSurfingSports): @"SurfingSports",
+                                        @(HKWorkoutActivityTypeSwimming): @"Swimming",
+                                        @(HKWorkoutActivityTypeTableTennis): @"TableTennis",
+                                        @(HKWorkoutActivityTypeTennis): @"Tennis",
+                                        @(HKWorkoutActivityTypeTrackAndField): @"rackAndField",
+                                        @(HKWorkoutActivityTypeTraditionalStrengthTraining): @"TraditionalStrengthTraining",
+                                        @(HKWorkoutActivityTypeVolleyball): @"Volleyball",
+                                        @(HKWorkoutActivityTypeWalking): @"Walking",
+                                        @(HKWorkoutActivityTypeWaterFitness): @"WaterFitness",
+                                        @(HKWorkoutActivityTypeWaterPolo): @"WaterPolo",
+                                        @(HKWorkoutActivityTypeWaterSports): @"WaterSports",
+                                        @(HKWorkoutActivityTypeWrestling): @"restling",
+                                        @(HKWorkoutActivityTypeYoga): @"Yoga",
+                                        @(HKWorkoutActivityTypeBarre): @"Barre",
+                                        @(HKWorkoutActivityTypeCoreTraining): @"CoreTraining",
+                                        @(HKWorkoutActivityTypeCrossCountrySkiing): @"CrossCountrySkiing",
+                                        @(HKWorkoutActivityTypeDownhillSkiing): @"DownhillSkiing",
+                                        @(HKWorkoutActivityTypeFlexibility): @"Flexibility",
+                                        @(HKWorkoutActivityTypeHighIntensityIntervalTraining): @"HighIntensityIntervalTraining",
+                                        @(HKWorkoutActivityTypeJumpRope): @"JumpRope",
+                                        @(HKWorkoutActivityTypeKickboxing): @"Kickboxing",
+                                        @(HKWorkoutActivityTypePilates): @"Pilates",
+                                        @(HKWorkoutActivityTypeSnowboarding): @"Snowboarding",
+                                        @(HKWorkoutActivityTypeStairs): @"Stairs",
+                                        @(HKWorkoutActivityTypeStepTraining): @"StepTraining",
+                                        @(HKWorkoutActivityTypeWheelchairWalkPace): @"WheelchairWalkPace",
+                                        @(HKWorkoutActivityTypeWheelchairRunPace): @"WheelchairRunPace",
+                                        @(HKWorkoutActivityTypeTaiChi): @"TaiChi",
+                                        @(HKWorkoutActivityTypeMixedCardio): @"MixedCardio",
+                                        @(HKWorkoutActivityTypeHandCycling): @"HandCycling",
+                                        };
+    return workoutActivities;
+}
+
+
+- (void)fetchWorkoutSamplesForPredicate:(NSPredicate *)predicate
+                                        limit:(NSUInteger)lim
+                                   completion:(void (^)(NSArray *, NSError *))completion {
+    
+    
+    NSSortDescriptor *timeSortDescriptor = [[NSSortDescriptor alloc] initWithKey:HKSampleSortIdentifierEndDate
+                                                                       ascending:false];
+    
+    
+    // declare the block
+    void (^handlerBlock)(HKSampleQuery *query, NSArray *results, NSError *error);
+    // create and assign the block
+    handlerBlock = ^(HKSampleQuery *query, NSArray *results, NSError *error) {
+        if (!results) {
+            if (completion) {
+                completion(nil, error);
+            }
+            return;
+        }
+        
+        if (completion) {
+            NSMutableArray *data = [NSMutableArray arrayWithCapacity:1];
+            
+            dispatch_async(dispatch_get_main_queue(), ^{
+                NSDictionary *activityDict = [self workoutActivityTypeDict];
+                
+                for (HKWorkout *sample in results) {
+                    HKWorkoutActivityType type = sample.workoutActivityType;
+                    NSTimeInterval duration = sample.duration;
+                    HKQuantity *totalDistance = sample.totalDistance;
+                    HKQuantity *totalEnergyBurned = sample.totalEnergyBurned;
+                    
+                    NSString *startDateString = [RCTAppleHealthKit buildISO8601StringFromDate:sample.startDate];
+                    NSString *endDateString = [RCTAppleHealthKit buildISO8601StringFromDate:sample.endDate];
+                    
+                    NSString *activityString = [activityDict objectForKey:@(type)];
+                    if (!activityString) {
+                        // Unknown
+                        activityString = [NSString stringWithFormat:@"Activity-%@", @(type)];
+                    }
+                    
+                    NSDictionary *elem = @{
+                                           @"startDate" : startDateString,
+                                           @"endDate" : endDateString,
+                                           @"activityType": activityString,
+                                           @"duration": @(duration),
+                                           @"totalDistance": totalDistance ? @([totalDistance doubleValueForUnit:[HKUnit meterUnit]]) : @(0),
+                                           @"totalEnergyBurned": totalEnergyBurned ? @([totalEnergyBurned doubleValueForUnit:[HKUnit kilocalorieUnit]]) : @(0),
+                                           };
+                    
+                    [data addObject:elem];
+                    
+                }
+                
+                completion(data, error);
+            });
+        }
+    };
+    
+    HKSampleQuery *query = [[HKSampleQuery alloc] initWithSampleType:[HKWorkoutType workoutType]
+                                                           predicate:predicate
+                                                               limit:lim
+                                                     sortDescriptors:@[timeSortDescriptor]
+                                                      resultsHandler:handlerBlock];
+    
+    
+    [self.healthStore executeQuery:query];
+}
+
+
 
 @end
