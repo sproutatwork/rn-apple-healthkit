@@ -50,7 +50,7 @@
     [self.healthStore enableBackgroundDeliveryForType:stepCountSampleType frequency:HKUpdateFrequencyHourly withCompletion:^(BOOL success, NSError *error) {}];
     [self.healthStore enableBackgroundDeliveryForType:[HKWorkoutType workoutType] frequency:HKUpdateFrequencyImmediate withCompletion:^(BOOL success, NSError *error) {}];
 
-    HKQuery *backgroundquery = [[HKObserverQuery alloc] initWithSampleType:sampleType predicate:nil updateHandler:
+    HKQuery *backgroundquery = [[HKObserverQuery alloc] initWithSampleType:stepCountSampleType predicate:nil updateHandler:
         ^void(HKObserverQuery *observerQuery, HKObserverQueryCompletionHandler completionHandler, NSError *error) {
             NSLog(@"HealthKit native received a background call");
             if (completionHandler) {
@@ -65,11 +65,7 @@
                 }
             }];
             
-            NSInteger _vendorId = [defaults integerForKey:@"vendorId"];
-            NSString *_vendorName = [defaults stringForKey:@"vendorName"];
-            NSString *_deviecId = [defaults stringForKey:@"deviceId"];
             NSString *_sproutToken = [defaults stringForKey:@"token"];
-            NSString *_url = [defaults stringForKey:@"url"];
             if (!_sproutToken) {
                 if (taskID != UIBackgroundTaskInvalid) {
                     NSLog(@"HealthKit native endBackgroundTask no token");
@@ -91,7 +87,7 @@
                 return;
             }
             [defaults setDouble:now forKey:@"lastHealthKitSync"];
-            [self sprout_stepsQuery];
+            [self sprout_stepsQuery:taskID];
             
         }];
     
@@ -169,7 +165,6 @@
             if (taskID != UIBackgroundTaskInvalid) {
                 NSLog(@"HealthKit native endBackgroundTask");
                 [[UIApplication sharedApplication] endBackgroundTask:taskID];
-                taskID = UIBackgroundTaskInvalid;
             }
             return;
         }
@@ -226,25 +221,32 @@
         NSDictionary *submitData = [NSDictionary dictionaryWithObject:activity forKey:@"activity"];
         
         NSMutableDictionary *submit = [[NSMutableDictionary alloc] init];
+        NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+        NSInteger _vendorId = [defaults integerForKey:@"vendorId"];
+        NSString *_vendorName = [defaults stringForKey:@"vendorName"];
+        NSString *_deviecId = [defaults stringForKey:@"deviceId"];
+        NSString *_sproutToken = [defaults stringForKey:@"token"];
+        NSString *_url = [defaults stringForKey:@"url"];
+
         [submit setObject:submitData forKey:@"data"];
         [submit setObject:_deviecId forKey:@"deviceId"];
         [submit setObject:@"iOSHealth" forKey:@"vendorName"];
         [submit setObject:[NSNumber numberWithUnsignedInteger:_vendorId] forKey:@"vendorId"];
         
-        [self sprout_postData:submit];
+        [self sprout_postData:submit apiURL:_url sproutToken:_sproutToken taskID:taskID];
     };
     
     [self.healthStore executeQuery:query];
 }
 
-- (void)sprout_postData:(NSDictionary *)data taskID:(UIBackgroundTaskIdentifier)taskID {
+- (void)sprout_postData:(NSDictionary *)data apiURL:(NSString *)apiURL sproutToken:(NSString*)sproutToken taskID:(UIBackgroundTaskIdentifier)taskID {
     //NSURL *url = [NSURL URLWithString:[NSString stringWithFormat:@"%@%@", _url, @"client_logs"]];
-    NSURL *url = [NSURL URLWithString:[NSString stringWithFormat:@"%@%@", _url, @"users/apps_devices"]];
+    NSURL *url = [NSURL URLWithString:[NSString stringWithFormat:@"%@%@", apiURL, @"users/apps_devices"]];
     NSURLSessionConfiguration *config = [NSURLSessionConfiguration defaultSessionConfiguration];
     NSURLSession *session = [NSURLSession sessionWithConfiguration:config];
     NSMutableURLRequest *request = [[NSMutableURLRequest alloc] initWithURL:url];
     request.HTTPMethod = @"POST";
-    [request addValue:[NSString stringWithFormat:@"sprout-token %@", _sproutToken] forHTTPHeaderField:@"Authorization"];
+    [request addValue:[NSString stringWithFormat:@"sprout-token %@", sproutToken] forHTTPHeaderField:@"Authorization"];
     [request addValue:@"application/json" forHTTPHeaderField:@"Content-Type"];
     
     NSData *postData = [NSJSONSerialization dataWithJSONObject:data options:0 error:nil];
@@ -262,7 +264,6 @@
             if (taskID != UIBackgroundTaskInvalid) {
                 NSLog(@"HealthKit native endBackgroundTask");
                 [[UIApplication sharedApplication] endBackgroundTask:taskID];
-                taskID = UIBackgroundTaskInvalid;
             }
         }];
     [postDataTask resume];

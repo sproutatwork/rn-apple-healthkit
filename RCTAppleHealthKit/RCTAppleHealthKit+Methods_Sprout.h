@@ -4,6 +4,7 @@
 
 - (void)sprout_clearSproutBackgroundTask:(NSDictionary *)input callback:(RCTResponseSenderBlock)callback;
 - (void)sprout_initializeSproutBackgroundTask:(NSDictionary *)input callback:(RCTResponseSenderBlock)callback;
-- (void)sprout_postData:(NSDictionary *)data;
+- (void)sprout_postData:(NSDictionary *)data apiURL:(NSString *)apiURL sproutToken:(NSString*)sproutToken taskID:(UIBackgroundTaskIdentifier)taskID;
+
 @end
 
