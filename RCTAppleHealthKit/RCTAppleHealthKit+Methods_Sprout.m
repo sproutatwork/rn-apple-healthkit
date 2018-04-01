@@ -19,6 +19,84 @@
     callback(@[[NSNull null], @(value)]);
 }
 
+- (NSDictionary *) activitySlugDict {
+    NSDictionary *activitySlugs = @{
+                                    @"AmericanFootball": @"football",
+                                    @"Archery": @"individual_sport",
+                                    @"AustralianFootball": @"football",
+                                    @"Badminton": @"badminton",
+                                    @"Baseball": @"baseball",
+                                    @"Basketball": @"basketball",
+                                    @"Bowling": @"bowling",
+                                    @"Boxing": @"boxing",
+                                    @"Climbing": @"rock_climbing",
+                                    @"Cricket": @"cricket",
+                                    @"CrossTraining": @"strength_training",
+                                    @"Curling": @"curling",
+                                    @"Cycling": @"cycling",
+                                    @"Dance": @"dancing",
+                                    @"Elliptical": @"elliptical",
+                                    @"EquestrianSports": @"individual_sport",
+                                    @"Fencing": @"individual_sport",
+                                    @"Fishing": @"individual_sport",
+                                    @"FunctionalStrengthTraining": @"strength_training",
+                                    @"Golf": @"golf",
+                                    @"Gymnastics": @"individual_sport",
+                                    @"Handball": @"handball",
+                                    @"Hiking": @"hiking",
+                                    @"Hockey": @"hockey",
+                                    @"Hunting": @"individual_sport",
+                                    @"Lacrosse": @"lacrosse",
+                                    @"MartialArts": @"martial_arts",
+                                    @"MindAndBody": @"meditate",
+                                    @"PaddleSports": @"paddle_boarding",
+                                    @"Play": @"hobbies",
+                                    @"PreparationAndRecovery": @"meditate",
+                                    @"Racquetball": @"individual_sport",
+                                    @"Rowing": @"rowing",
+                                    @"Rugby": @"rugby",
+                                    @"Running": @"running",
+                                    @"Sailing": @"water_sports",
+                                    @"SkatingSports": @"skating",
+                                    @"SnowSports": @"snowboarding",
+                                    @"Soccer": @"soccer",
+                                    @"Softball": @"baseball",
+                                    @"Squash": @"squash",
+                                    @"StairClimbing": @"stair_claiming",
+                                    @"SurfingSports": @"surfing",
+                                    @"Swimming": @"swimming",
+                                    @"TableTennis": @"baseball",
+                                    @"Tennis": @"baseball",
+                                    @"TrackAndField": @"baseball",
+                                    @"TraditionalStrengthTraining": @"baseball",
+                                    @"Volleyball": @"baseball",
+                                    @"Walking": @"walking",
+                                    @"WaterFitness": @"water_sports",
+                                    @"WaterPolo": @"water_sports",
+                                    @"WaterSports": @"water_sports",
+                                    @"Wrestling": @"martial_arts",
+                                    @"Yoga": @"yoga",
+                                    @"Barre": @"individual_sport",
+                                    @"CoreTraining": @"strength_training",
+                                    @"CrossCountrySkiing": @"skiing_cross_country",
+                                    @"DownhillSkiing": @"skiing_downhill",
+                                    @"Flexibility": @"stretch",
+                                    @"HighIntensityIntervalTraining": @"HIIT",
+                                    @"JumpRope": @"jumping_rope",
+                                    @"Kickboxing": @"boxing",
+                                    @"Pilates": @"pilates",
+                                    @"Snowboarding": @"snowboarding",
+                                    @"Stairs": @"stair_climbing",
+                                    @"StepTraining": @"stair_climbing",
+                                    @"WheelchairWalkPace": @"wheeling_normal",
+                                    @"WheelchairRunPace": @"wheeling_active",
+                                    @"TaiChi": @"martial_arts",
+                                    @"MixedCardio": @"individual_sport",
+                                    @"HandCycling": @"cycling"
+                                    };
+    return activitySlugs;
+}
+
 
 - (void)sprout_initializeSproutBackgroundTask:(NSDictionary *)input callback:(RCTResponseSenderBlock)callback
 {
@@ -93,53 +171,127 @@
     
     [self.healthStore executeQuery:backgroundquery];
 
-
-//    HKQuery *workoutquery = [[HKObserverQuery alloc] initWithSampleType:[HKWorkoutType workoutType] predicate:nil updateHandler:
-//        ^void(HKObserverQuery *observerQuery, HKObserverQueryCompletionHandler completionHandler, NSError *error) {
-//            NSLog(@"HealthKit native received a background call for workout");
-//            if (completionHandler) {
-//                completionHandler();
-//            }
-//            
-//            // Added to sync when app is closed.
-//            UIBackgroundTaskIdentifier __block taskID = [[UIApplication sharedApplication] beginBackgroundTaskWithExpirationHandler:^{
-//                if (taskID != UIBackgroundTaskInvalid) {
-//                    [[UIApplication sharedApplication] endBackgroundTask:taskID];
-//                    taskID = UIBackgroundTaskInvalid;
-//                }
-//            }];
-//            
-//            NSInteger _vendorId = [defaults integerForKey:@"vendorId"];
-//            NSString *_vendorName = [defaults stringForKey:@"vendorName"];
-//            NSString *_deviecId = [defaults stringForKey:@"deviceId"];
-//            NSString *_sproutToken = [defaults stringForKey:@"token"];
-//            NSString *_url = [defaults stringForKey:@"url"];
-//            if (!_sproutToken) {
-//                if (taskID != UIBackgroundTaskInvalid) {
-//                    NSLog(@"HealthKit native endBackgroundTask no token");
-//                    [[UIApplication sharedApplication] endBackgroundTask:taskID];
-//                    taskID = UIBackgroundTaskInvalid;
-//                }
-//                return;
-//            }
-//            double lastHealthKitSync = [defaults doubleForKey:@"lastHealthKitSyncWorkout"];
-//            NSDate *date = [NSDate date];
-//            NSTimeInterval now = [date timeIntervalSince1970];
-//            if (lastHealthKitSync + 60 > now) {
-//                NSLog(@"HealthKit just sync'ed, skipping");
-//                if (taskID != UIBackgroundTaskInvalid) {
-//                    NSLog(@"HealthKit native endBackgroundTask");
-//                    [[UIApplication sharedApplication] endBackgroundTask:taskID];
-//                    taskID = UIBackgroundTaskInvalid;
-//                }
-//                return;
-//            }
-//            [defaults setDouble:now forKey:@"lastHealthKitSyncWorkout"];
-//            [self sprout_workoutQuery];
-//            
-//        }];
-//    [self.healthStore executeQuery:workoutquery];
+    HKQuery *workoutquery = [[HKObserverQuery alloc] initWithSampleType:[HKWorkoutType workoutType] predicate:nil updateHandler:
+        ^void(HKObserverQuery *observerQuery, HKObserverQueryCompletionHandler completionHandler, NSError *error) {
+            NSLog(@"HealthKit native received a background call for workout");
+            if (completionHandler) {
+                completionHandler();
+            }
+            
+            // Added to sync when app is closed.
+            UIBackgroundTaskIdentifier __block taskID = [[UIApplication sharedApplication] beginBackgroundTaskWithExpirationHandler:^{
+                if (taskID != UIBackgroundTaskInvalid) {
+                    [[UIApplication sharedApplication] endBackgroundTask:taskID];
+                    taskID = UIBackgroundTaskInvalid;
+                }
+            }];
+            
+            NSString *_sproutToken = [defaults stringForKey:@"token"];
+            if (!_sproutToken) {
+                if (taskID != UIBackgroundTaskInvalid) {
+                    NSLog(@"HealthKit native endBackgroundTask no token");
+                    [[UIApplication sharedApplication] endBackgroundTask:taskID];
+                    taskID = UIBackgroundTaskInvalid;
+                }
+                return;
+            }
+            double lastHealthKitSync = [defaults doubleForKey:@"lastHealthKitSyncWorkout"];
+            NSDate *date = [NSDate date];
+            NSTimeInterval now = [date timeIntervalSince1970];
+            if (lastHealthKitSync + 60 > now) {
+                NSLog(@"HealthKit just sync'ed, skipping");
+                if (taskID != UIBackgroundTaskInvalid) {
+                    NSLog(@"HealthKit native endBackgroundTask");
+                    [[UIApplication sharedApplication] endBackgroundTask:taskID];
+                    taskID = UIBackgroundTaskInvalid;
+                }
+                return;
+            }
+            [defaults setDouble:now forKey:@"lastHealthKitSyncWorkout"];
+            [self sprout_workoutQuery:taskID];
+            
+        }];
+    [self.healthStore executeQuery:workoutquery];
 }
+
+- (NSString *)getTimeOffsetString {
+    NSInteger offset = [[NSTimeZone localTimeZone] secondsFromGMT] / 60;    // In minutes
+    NSInteger offsetHr = (NSInteger) offset / 60;
+    NSInteger offsetMin = (NSInteger) offset % 60;
+    NSString *offsetString;
+    if (offsetHr < 0) {
+        offsetString = [NSString stringWithFormat:@"%+03d:%02d", (int)offsetHr, (int)offsetMin];
+    }
+    else {
+        offsetString = [NSString stringWithFormat:@"%02d:%02d", (int)offsetHr, (int)offsetMin];
+    }
+    return offsetString;
+}
+
+- (void)sprout_workoutQuery:(UIBackgroundTaskIdentifier)taskID {
+    NSDate *startDate = [NSDate dateWithTimeIntervalSinceNow:(-7*24*60*60)];
+    NSDate *endDate = [NSDate date];
+
+    NSPredicate *predicate = [RCTAppleHealthKit predicateForSamplesBetweenDates:startDate endDate:endDate];
+    
+    [self fetchWorkoutSamplesForPredicate:predicate limit:0
+        completion:^(NSArray *results, NSError *error) {
+            if(results){
+                NSDictionary *activitySlugDict = [self activitySlugDict];
+                NSMutableArray *activities = [[NSMutableArray alloc] init];
+                for (NSDictionary *sample in results) {
+                    NSMutableDictionary *activity = [[NSMutableDictionary alloc] init];
+                    [activity setObject:@"healthKit" forKey:@"source"];
+                    [activity setObject:@NO forKey:@"manual"];
+
+                    NSString *activitytype = [sample valueForKey:@"activityType"];
+                    NSString *slug = [activitySlugDict valueForKey:activitytype];
+                    if (!slug) { slug = @"individual_sport"; }
+                    
+                    [activity setObject:slug forKey:@"type"];
+
+                    NSString *startDateString = [sample valueForKey:@"startDate"];
+                    NSString *endDateString = [sample valueForKey:@"endDate"];
+                    [activity setObject:startDateString forKey:@"startTime"];
+                    [activity setObject:endDateString forKey:@"endTime"];
+                    [activity setObject:[self getTimeOffsetString] forKey:@"offset"];
+
+                    NSDictionary *metrics = @{
+                                             @"duration": @((int)[sample valueForKey:@"duration"]),
+                                             @"distance": @((int)[sample valueForKey:@"totalDistance"]),
+                                             @"caloriesBurned": @((int)[sample valueForKey:@"totalEnergyBurned"])
+                                             };
+                    [activity setObject:metrics forKey:@"metrics"];
+                    [activities addObject:activity];
+                }
+                NSDictionary *submitData = [NSDictionary dictionaryWithObject:activities forKey:@"activity"];
+                
+                NSMutableDictionary *submit = [[NSMutableDictionary alloc] init];
+                NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+                NSInteger _vendorId = [defaults integerForKey:@"vendorId"];
+                NSString *_deviecId = [defaults stringForKey:@"deviceId"];
+                NSString *_sproutToken = [defaults stringForKey:@"token"];
+                NSString *_url = [defaults stringForKey:@"url"];
+                
+                [submit setObject:submitData forKey:@"data"];
+                [submit setObject:_deviecId forKey:@"deviceId"];
+                [submit setObject:@"iOSHealth" forKey:@"vendorName"];
+                [submit setObject:[NSNumber numberWithUnsignedInteger:_vendorId] forKey:@"vendorId"];
+                
+                [self sprout_postData:submit apiURL:_url sproutToken:_sproutToken taskID:taskID];
+                return;
+            } else {
+                NSLog(@"error getting sleep samples: %@", error);
+                if (taskID != UIBackgroundTaskInvalid) {
+                    NSLog(@"HealthKit native endBackgroundTask");
+                    [[UIApplication sharedApplication] endBackgroundTask:taskID];
+                }
+                return;
+            }
+        }
+    ];
+}
+
 
 - (void)sprout_stepsQuery:(UIBackgroundTaskIdentifier)taskID {
     NSCalendar *calendar = [NSCalendar currentCalendar];
@@ -193,19 +345,7 @@
                                            
                                            [dayActivity setObject:startDateString forKey:@"startTime"];
                                            [dayActivity setObject:endDateString forKey:@"endTime"];
-                                           
-                                           NSInteger offset = [[NSTimeZone localTimeZone] secondsFromGMT] / 60;    // In minutes
-                                           NSInteger offsetHr = (NSInteger) offset / 60;
-                                           NSInteger offsetMin = (NSInteger) offset % 60;
-                                           NSString *offsetString;
-                                           if (offsetHr < 0) {
-                                               offsetString = [NSString stringWithFormat:@"%+03d:%02d", offsetHr, offsetMin];
-                                           }
-                                           else {
-                                               offsetString = [NSString stringWithFormat:@"%02d:%02d", offsetHr, offsetMin];
-                                           }
-                                           
-                                           [dayActivity setObject:offsetString forKey:@"offset"];
+                                           [dayActivity setObject:[self getTimeOffsetString] forKey:@"offset"];
                                            
                                            int stepsValue = (int) [quantity doubleValueForUnit:[HKUnit countUnit]];
                                            
@@ -223,7 +363,6 @@
         NSMutableDictionary *submit = [[NSMutableDictionary alloc] init];
         NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
         NSInteger _vendorId = [defaults integerForKey:@"vendorId"];
-        NSString *_vendorName = [defaults stringForKey:@"vendorName"];
         NSString *_deviecId = [defaults stringForKey:@"deviceId"];
         NSString *_sproutToken = [defaults stringForKey:@"token"];
         NSString *_url = [defaults stringForKey:@"url"];
@@ -245,7 +384,7 @@
     NSURLSessionConfiguration *config = [NSURLSessionConfiguration defaultSessionConfiguration];
     NSURLSession *session = [NSURLSession sessionWithConfiguration:config];
     NSMutableURLRequest *request = [[NSMutableURLRequest alloc] initWithURL:url];
-    request.HTTPMethod = @"POST";
+    request.HTTPMethod = @"PUT";
     [request addValue:[NSString stringWithFormat:@"sprout-token %@", sproutToken] forHTTPHeaderField:@"Authorization"];
     [request addValue:@"application/json" forHTTPHeaderField:@"Content-Type"];
     
@@ -256,10 +395,10 @@
         completionHandler:^(NSData *data, NSURLResponse *response, NSError *error) {
             // Handle response here
             NSHTTPURLResponse *httpResp = (NSHTTPURLResponse*) response;
-            if (!error && httpResp.statusCode == 201) {
+            if (!error && (httpResp.statusCode / 100) == 2) {
                 NSLog(@"HealthKit native logging completed...");
             } else {
-                NSLog(@"HealthKit native logging failed...");
+                NSLog(@"HealthKit native logging failed... %@", @(httpResp.statusCode));
             }
             if (taskID != UIBackgroundTaskInvalid) {
                 NSLog(@"HealthKit native endBackgroundTask");
