@@ -19,6 +19,7 @@
 #import "RCTAppleHealthKit+Methods_Sleep.h"
 #import "RCTAppleHealthKit+Methods_Mindfulness.h"
 #import "RCTAppleHealthKit+Methods_Workout.h"
+#import "RCTAppleHealthKit+Methods_Sprout.h"
 
 #import <React/RCTBridgeModule.h>
 #import <React/RCTEventDispatcher.h>
@@ -40,12 +41,12 @@ RCT_EXPORT_METHOD(initHealthKit:(NSDictionary *)input callback:(RCTResponseSende
 
 RCT_EXPORT_METHOD(clearSproutBackgroundTask:(NSDictionary *)input callback:(RCTResponseSenderBlock)callback)
 {
-    [self fitness_clearSproutBackgroundTask:input callback:callback];
+    [self sprout_clearSproutBackgroundTask:input callback:callback];
 }
 
 RCT_EXPORT_METHOD(initSproutBackgroundTask:(NSDictionary *)input callback:(RCTResponseSenderBlock)callback)
 {
-    [self fitness_initializeSproutBackgroundTask:input callback:callback];
+    [self sprout_initializeSproutBackgroundTask:input callback:callback];
 }
 
 RCT_EXPORT_METHOD(initStepCountObserver:(NSDictionary *)input callback:(RCTResponseSenderBlock)callback)
