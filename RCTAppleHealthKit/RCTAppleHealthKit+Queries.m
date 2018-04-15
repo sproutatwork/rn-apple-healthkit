@@ -546,6 +546,8 @@
                 for (HKWorkout *sample in results) {
                     HKWorkoutActivityType type = sample.workoutActivityType;
                     NSTimeInterval duration = sample.duration;
+                    NSInteger durationInt = round(duration);
+                    
                     HKQuantity *totalDistance = sample.totalDistance;
                     HKQuantity *totalEnergyBurned = sample.totalEnergyBurned;
                     
@@ -562,7 +564,7 @@
                                            @"startDate" : startDateString,
                                            @"endDate" : endDateString,
                                            @"activityType": activityString,
-                                           @"duration": @(duration),
+                                           @"duration": @(durationInt),
                                            @"totalDistance": totalDistance ? @([totalDistance doubleValueForUnit:[HKUnit meterUnit]]) : @(0),
                                            @"totalEnergyBurned": totalEnergyBurned ? @([totalEnergyBurned doubleValueForUnit:[HKUnit kilocalorieUnit]]) : @(0),
                                            };
