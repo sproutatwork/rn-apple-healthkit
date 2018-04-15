@@ -255,11 +255,11 @@
                     [activity setObject:startDateString forKey:@"startTime"];
                     [activity setObject:endDateString forKey:@"endTime"];
                     [activity setObject:[self getTimeOffsetString] forKey:@"offset"];
-
+                    
                     NSDictionary *metrics = @{
-                                             @"duration": @((int)[sample valueForKey:@"duration"]),
-                                             @"distance": @((int)[sample valueForKey:@"totalDistance"]),
-                                             @"caloriesBurned": @((int)[sample valueForKey:@"totalEnergyBurned"])
+                                             @"duration": @([[sample objectForKey:@"duration"] intValue]),
+                                             @"distance": @([[sample objectForKey:@"totalDistance"] intValue]),
+                                             @"caloriesBurned": @([[sample objectForKey:@"totalEnergyBurned"] intValue])
                                              };
                     [activity setObject:metrics forKey:@"metrics"];
                     [activities addObject:activity];
