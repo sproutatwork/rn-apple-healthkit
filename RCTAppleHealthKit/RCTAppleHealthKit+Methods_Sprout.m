@@ -264,21 +264,23 @@
                     [activity setObject:metrics forKey:@"metrics"];
                     [activities addObject:activity];
                 }
-                NSDictionary *submitData = [NSDictionary dictionaryWithObject:activities forKey:@"activity"];
-                
-                NSMutableDictionary *submit = [[NSMutableDictionary alloc] init];
-                NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
-                NSInteger _vendorId = [defaults integerForKey:@"vendorId"];
-                NSString *_deviecId = [defaults stringForKey:@"deviceId"];
-                NSString *_sproutToken = [defaults stringForKey:@"token"];
-                NSString *_url = [defaults stringForKey:@"url"];
-                
-                [submit setObject:submitData forKey:@"data"];
-                [submit setObject:_deviecId forKey:@"deviceId"];
-                [submit setObject:@"iOSHealth" forKey:@"vendorName"];
-                [submit setObject:[NSNumber numberWithUnsignedInteger:_vendorId] forKey:@"vendorId"];
-                
-                [self sprout_postData:submit apiURL:_url sproutToken:_sproutToken taskID:taskID];
+                if ([activities count] > 0) {
+                    NSDictionary *submitData = [NSDictionary dictionaryWithObject:activities forKey:@"activity"];
+                    
+                    NSMutableDictionary *submit = [[NSMutableDictionary alloc] init];
+                    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+                    NSInteger _vendorId = [defaults integerForKey:@"vendorId"];
+                    NSString *_deviecId = [defaults stringForKey:@"deviceId"];
+                    NSString *_sproutToken = [defaults stringForKey:@"token"];
+                    NSString *_url = [defaults stringForKey:@"url"];
+                    
+                    [submit setObject:submitData forKey:@"data"];
+                    [submit setObject:_deviecId forKey:@"deviceId"];
+                    [submit setObject:@"iOSHealth" forKey:@"vendorName"];
+                    [submit setObject:[NSNumber numberWithUnsignedInteger:_vendorId] forKey:@"vendorId"];
+                    
+                    [self sprout_postData:submit apiURL:_url sproutToken:_sproutToken taskID:taskID];
+                }
                 return;
             } else {
                 NSLog(@"error getting sleep samples: %@", error);
@@ -358,21 +360,23 @@
                                    }
         ];
         
-        NSDictionary *submitData = [NSDictionary dictionaryWithObject:activity forKey:@"activity"];
-        
-        NSMutableDictionary *submit = [[NSMutableDictionary alloc] init];
-        NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
-        NSInteger _vendorId = [defaults integerForKey:@"vendorId"];
-        NSString *_deviecId = [defaults stringForKey:@"deviceId"];
-        NSString *_sproutToken = [defaults stringForKey:@"token"];
-        NSString *_url = [defaults stringForKey:@"url"];
+        if ([activity count] > 0) {
+            NSDictionary *submitData = [NSDictionary dictionaryWithObject:activity forKey:@"activity"];
+            
+            NSMutableDictionary *submit = [[NSMutableDictionary alloc] init];
+            NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+            NSInteger _vendorId = [defaults integerForKey:@"vendorId"];
+            NSString *_deviecId = [defaults stringForKey:@"deviceId"];
+            NSString *_sproutToken = [defaults stringForKey:@"token"];
+            NSString *_url = [defaults stringForKey:@"url"];
 
-        [submit setObject:submitData forKey:@"data"];
-        [submit setObject:_deviecId forKey:@"deviceId"];
-        [submit setObject:@"iOSHealth" forKey:@"vendorName"];
-        [submit setObject:[NSNumber numberWithUnsignedInteger:_vendorId] forKey:@"vendorId"];
-        
-        [self sprout_postData:submit apiURL:_url sproutToken:_sproutToken taskID:taskID];
+            [submit setObject:submitData forKey:@"data"];
+            [submit setObject:_deviecId forKey:@"deviceId"];
+            [submit setObject:@"iOSHealth" forKey:@"vendorName"];
+            [submit setObject:[NSNumber numberWithUnsignedInteger:_vendorId] forKey:@"vendorId"];
+            
+            [self sprout_postData:submit apiURL:_url sproutToken:_sproutToken taskID:taskID];
+        }
     };
     
     [self.healthStore executeQuery:query];
