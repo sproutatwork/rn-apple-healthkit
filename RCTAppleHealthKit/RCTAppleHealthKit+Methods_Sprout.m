@@ -62,7 +62,7 @@
                                     @"Soccer": @"soccer",
                                     @"Softball": @"baseball",
                                     @"Squash": @"squash",
-                                    @"StairClimbing": @"stair_claiming",
+                                    @"StairClimbing": @"stair_climbing",
                                     @"SurfingSports": @"surfing",
                                     @"Swimming": @"swimming",
                                     @"TableTennis": @"table_tennis",
