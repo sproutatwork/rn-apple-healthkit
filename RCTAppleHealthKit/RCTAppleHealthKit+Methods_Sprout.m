@@ -374,7 +374,8 @@
             [submit setObject:_deviecId forKey:@"deviceId"];
             [submit setObject:@"iOSHealth" forKey:@"vendorName"];
             [submit setObject:[NSNumber numberWithUnsignedInteger:_vendorId] forKey:@"vendorId"];
-            
+            [submit setObject:[NSNumber numberWithUnsignedInteger:1] forKey:@"background"];
+
             [self sprout_postData:submit apiURL:_url sproutToken:_sproutToken taskID:taskID];
         }
     };
