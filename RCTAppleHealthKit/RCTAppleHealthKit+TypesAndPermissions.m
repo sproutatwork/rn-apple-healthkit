@@ -57,10 +57,15 @@
     }else if ([@"NikeFuel" isEqualToString: key]) {
         return [HKObjectType quantityTypeForIdentifier:HKQuantityTypeIdentifierNikeFuel];
     }
-
-//    if ([@"AppleExerciseTime" isEqualToString: key]) {
-//        return [HKObjectType quantityTypeForIdentifier:HKQuantityTypeIdentifierAppleExerciseTime];
-//    }
+    else if ([@"AppleExerciseTime" isEqualToString: key] && systemVersion >= 9.3) {
+       return [HKObjectType quantityTypeForIdentifier:HKQuantityTypeIdentifierAppleExerciseTime];
+    }
+    else if ([@"AppleStandHours" isEqualToString: key] && systemVersion >= 9.0) {
+       return [HKObjectType categoryTypeForIdentifier:HKCategoryTypeIdentifierAppleStandHour];
+    }
+    else if ([@"ActivitySummary" isEqualToString: key] && systemVersion >= 9.3) {
+       return [HKObjectType activitySummaryType];
+    }
 
     // Nutrition Identifiers
     if ([@"DietaryEnergy" isEqualToString: key]) {
