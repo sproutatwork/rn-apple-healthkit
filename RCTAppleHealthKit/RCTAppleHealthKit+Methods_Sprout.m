@@ -354,7 +354,7 @@
     // Create the query
     HKStatisticsCollectionQuery *query = [[HKStatisticsCollectionQuery alloc] initWithQuantityType:quantityType
                                                                            quantitySamplePredicate:nil
-                                                                                           options:HKStatisticsOptionCumulativeSum
+                                                                                           options:HKStatisticsOptionCumulativeSum || HKStatisticsOptionSeparateBySource
                                                                                         anchorDate:anchorDate
                                                                                 intervalComponents:interval];
     // Set the results handler
@@ -394,6 +394,13 @@
                                            [dayActivity setObject:startDateString forKey:@"startTime"];
                                            [dayActivity setObject:endDateString forKey:@"endTime"];
                                            [dayActivity setObject:[self getTimeOffsetString] forKey:@"offset"];
+
+                                           NSArray *sources = result.sources;
+                                           NSMutableArray *sourceNames = [NSMutableArray array];
+                                           for (HKSource *source in sources) {
+                                               [sourceNames addObject:source.name];
+                                           } 
+                                           [dayActivity setObject:sourceNames forKey:@"deviceName"];
                                            
                                            int stepsValue = (int) [quantity doubleValueForUnit:[HKUnit countUnit]];
                                            
@@ -482,6 +489,13 @@
                                            [dayActivity setObject:startDateString forKey:@"startTime"];
                                            [dayActivity setObject:endDateString forKey:@"endTime"];
                                            [dayActivity setObject:[self getTimeOffsetString] forKey:@"offset"];
+
+                                           NSArray *sources = result.sources;
+                                           NSMutableArray *sourceNames = [NSMutableArray array];
+                                           for (HKSource *source in sources) {
+                                               [sourceNames addObject:source.name];
+                                           } 
+                                           [dayActivity setObject:sourceNames forKey:@"deviceName"];
                                            
                                            double minutesValue = [quantity doubleValueForUnit:[HKUnit minuteUnit]];
                                            

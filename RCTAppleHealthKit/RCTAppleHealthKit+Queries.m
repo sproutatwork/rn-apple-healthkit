@@ -17,7 +17,7 @@
 
 - (void)fetchMostRecentQuantitySampleOfType:(HKQuantityType *)quantityType
                                   predicate:(NSPredicate *)predicate
-                                 completion:(void (^)(HKQuantity *, NSDate *, NSDate *, NSError *))completion {
+                                 completion:(void (^)(HKQuantity *, NSDate *, NSDate *, NSDictionary *, NSError *))completion {
 
     NSSortDescriptor *timeSortDescriptor = [[NSSortDescriptor alloc]
             initWithKey:HKSampleSortIdentifierEndDate
@@ -33,7 +33,7 @@
 
                       if (!results) {
                           if (completion) {
-                              completion(nil, nil, nil, error);
+                              completion(nil, nil, nil, nil, error);
                           }
                           return;
                       }
@@ -41,10 +41,11 @@
                       if (completion) {
                           // If quantity isn't in the database, return nil in the completion block.
                           HKQuantitySample *quantitySample = results.firstObject;
+                          NSDictionary *deviceInfo = [self deviceInfoForSample:quantitySample];
                           HKQuantity *quantity = quantitySample.quantity;
                           NSDate *startDate = quantitySample.startDate;
                           NSDate *endDate = quantitySample.endDate;
-                          completion(quantity, startDate, endDate, error);
+                          completion(quantity, startDate, endDate, deviceInfo, error);
                       }
                 }
     ];
@@ -524,7 +525,7 @@
     // Create the query
     HKStatisticsCollectionQuery *query = [[HKStatisticsCollectionQuery alloc] initWithQuantityType:quantityType
                                                                            quantitySamplePredicate:predicate
-                                                                                           options:HKStatisticsOptionCumulativeSum
+                                                                                           options:HKStatisticsOptionCumulativeSum || HKStatisticsOptionSeparateBySource
                                                                                         anchorDate:anchorDate
                                                                                 intervalComponents:interval];
 
@@ -550,10 +551,17 @@
                                            NSString *startDateString = [RCTAppleHealthKit buildISO8601StringFromDate:startDate];
                                            NSString *endDateString = [RCTAppleHealthKit buildISO8601StringFromDate:endDate];
 
+                                           NSArray *sources = result.sources;
+                                           NSMutableArray *sourceNames = [NSMutableArray array];
+                                           for (HKSource *source in sources) {
+                                               [sourceNames addObject:source.name];
+                                           } 
+
                                            NSDictionary *elem = @{
                                                    @"value" : @(value),
                                                    @"startDate" : startDateString,
                                                    @"endDate" : endDateString,
+                                                   @"sourceNames" : sourceNames
                                            };
                                            [data addObject:elem];
                                        }
@@ -601,7 +609,7 @@
     // Create the query
     HKStatisticsCollectionQuery *query = [[HKStatisticsCollectionQuery alloc] initWithQuantityType:quantityType
                                                                            quantitySamplePredicate:predicate
-                                                                                           options:HKStatisticsOptionCumulativeSum
+                                                                                           options:HKStatisticsOptionCumulativeSum || HKStatisticsOptionSeparateBySource
                                                                                         anchorDate:anchorDate
                                                                                 intervalComponents:interval];
 
@@ -624,6 +632,12 @@
                                            NSDate *endDate = result.endDate;
                                            double value = [quantity doubleValueForUnit:unit];
 
+                                           NSArray *sources = result.sources;
+                                           NSMutableArray *sourceNames = [NSMutableArray array];
+                                           for (HKSource *source in sources) {
+                                               [sourceNames addObject:source.name];
+                                           } 
+
                                            NSString *startDateString = [RCTAppleHealthKit buildISO8601StringFromDate:startDate];
                                            NSString *endDateString = [RCTAppleHealthKit buildISO8601StringFromDate:endDate];
                                            
@@ -631,6 +645,7 @@
                                                    @"value" : @(value),
                                                    @"startDate" : startDateString,
                                                    @"endDate" : endDateString,
+                                                   @"sourceNames" : sourceNames
                                            };
                                            [data addObject:elem];
                                        }
@@ -775,7 +790,9 @@
                         // Unknown
                         activityString = [NSString stringWithFormat:@"Activity-%@", @(type)];
                     }
-                    
+
+                    NSDictionary *deviceInfo = [self deviceInfoForSample:sample];
+
                     NSDictionary *elem = @{
                                            @"startDate" : startDateString,
                                            @"endDate" : endDateString,
@@ -783,6 +800,7 @@
                                            @"duration": @(durationInt),
                                            @"totalDistance": totalDistance ? @([totalDistance doubleValueForUnit:[HKUnit meterUnit]]) : @(0),
                                            @"totalEnergyBurned": totalEnergyBurned ? @([totalEnergyBurned doubleValueForUnit:[HKUnit kilocalorieUnit]]) : @(0),
+                                           @"deviceInfo" : deviceInfo
                                            };
                     
                     [data addObject:elem];
@@ -802,6 +820,31 @@
     
     
     [self.healthStore executeQuery:query];
+}
+
+
+- (NSDictionary *)deviceInfoForSample:(HKSample *)sample {
+    if (sample) {
+        NSString *deviceName = @"";
+        if ([sample device]) {
+            deviceName = [[sample device] name];
+        }
+        NSString *deviceModel = @"";
+        if ([sample device]) {
+            deviceModel = [[sample device] model];
+        }
+
+        NSDictionary *deviceInfo = @{
+            @"sourceName" : [[[sample sourceRevision] source] name],
+            @"productType" : [[sample sourceRevision] productType],
+            @"deviceName" : deviceName,
+            @"deviceModel" : deviceModel
+            };
+
+        return deviceInfo;
+    }
+
+    return @{};
 }
 
 
