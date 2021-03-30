@@ -85,12 +85,15 @@
                     NSString *startDateString = [RCTAppleHealthKit buildISO8601StringFromDate:sample.startDate];
                     NSString *endDateString = [RCTAppleHealthKit buildISO8601StringFromDate:sample.endDate];
 
+                    NSDictionary *deviceInfo = [self deviceInfoForSample:sample];
+
                     NSDictionary *elem = @{
                             @"value" : @(value),
                             @"sourceName" : [[[sample sourceRevision] source] name],
                             @"sourceId" : [[[sample sourceRevision] source] bundleIdentifier],
                             @"startDate" : startDateString,
                             @"endDate" : endDateString,
+                            @"deviceInfo" : deviceInfo
                     };
 
                     [data addObject:elem];
