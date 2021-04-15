@@ -497,7 +497,7 @@
                                            } 
                                            [dayActivity setObject:sourceNames forKey:@"deviceName"];
                                            
-                                           double minutesValue = [quantity doubleValueForUnit:[HKUnit minuteUnit]];
+                                           int minutesValue = (int)[quantity doubleValueForUnit:[HKUnit minuteUnit]];
                                            
                                            NSDictionary *metrics = [NSDictionary dictionaryWithObject:[NSNumber numberWithInt:minutesValue] forKey:@"medIntensity"];
                                            [dayActivity setObject:metrics forKey:@"metrics"];
