@@ -69,4 +69,6 @@
 - (void)fetchWorkoutSamplesForPredicate:(NSPredicate *)predicate
                                         limit:(NSUInteger)lim
                                    completion:(void (^)(NSArray *, NSError *))completion;
+
+- (NSDictionary *)deviceInfoForSample:(HKSample *)sample;
 @end
