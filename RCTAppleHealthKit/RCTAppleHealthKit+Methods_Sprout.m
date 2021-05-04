@@ -302,23 +302,28 @@
                     [activity setObject:endDateString forKey:@"endTime"];
                     [activity setObject:[self getTimeOffsetString] forKey:@"offset"];
 
-                    NSDictionary *deviceInfo = [self deviceInfoForSample:sample];
-					NSString *sourceName = [deviceInfo objectForKey:@"sourceName"];
-					NSString *productType = [deviceInfo objectForKey:@"productType"];  
+                    HKSourceRevision *sourceRevision = [sample objectForKey:@"sourceRevision"];
+                    if (sourceRevision) {
+                        NSString *sourceName = [[sourceRevision source] name];
+					    NSString *productType = [sourceRevision productType];  
 
-                    NSMutableString *deviceName = [[NSMutableString alloc] init];
-                    if (productType && sourceName) {
-                        [deviceName appendString:productType];
-                        [deviceName appendString:@" - "];
-                        [deviceName appendString:sourceName];
-                    } else if (productType) {
-                        deviceName = productType;
-                    } else if (sourceName) {
-                        deviceName = sourceName;
+                        NSMutableString *deviceName = [[NSMutableString alloc] init];
+                        if (productType && sourceName) {
+                            [deviceName appendString:productType];
+                            [deviceName appendString:@" - "];
+                            [deviceName appendString:sourceName];
+                        } else if (productType) {
+                            deviceName = productType;
+                        } else if (sourceName) {
+                            deviceName = sourceName;
+                        } else {
+                            deviceName = @"Apple Health";
+                        }
+                        [activity setObject:deviceName forKey:@"deviceName"];
                     } else {
-                        deviceName = @"Apple Health";
+                        NSString *deviceName = @"Apple Health";
+                        [activity setObject:deviceName forKey:@"deviceName"];
                     }
-                    [activity setObject:deviceName forKey:@"deviceName"];
                     
                     NSDictionary *metrics = @{
                                              @"duration": @([[sample objectForKey:@"duration"] intValue]),
