@@ -305,7 +305,7 @@
                     HKSourceRevision *sourceRevision = [sample objectForKey:@"sourceRevision"];
                     if (sourceRevision) {
                         NSString *sourceName = [[sourceRevision source] name];
-			NSString *productType = [sourceRevision productType];  
+			            NSString *productType = [sourceRevision productType];  
 
                         NSMutableString *deviceName = [[NSMutableString alloc] init];
                         if (productType && sourceName) {
