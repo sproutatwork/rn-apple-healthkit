@@ -301,6 +301,24 @@
                     [activity setObject:startDateString forKey:@"startTime"];
                     [activity setObject:endDateString forKey:@"endTime"];
                     [activity setObject:[self getTimeOffsetString] forKey:@"offset"];
+
+                    NSDictionary *deviceInfo = [self deviceInfoForSample:sample];
+					NSString *sourceName = [deviceInfo objectForKey:@"sourceName"];
+					NSString *productType = [deviceInfo objectForKey:@"productType"];  
+
+                    NSMutableString *deviceName = [[NSMutableString alloc] init];
+                    if (productType && sourceName) {
+                        [deviceName appendString:productType];
+                        [deviceName appendString:@" - "];
+                        [deviceName appendString:sourceName];
+                    } else if (productType) {
+                        deviceName = productType;
+                    } else if (sourceName) {
+                        deviceName = sourceName;
+                    } else {
+                        deviceName = @"Apple Health";
+                    }
+                    [activity setObject:deviceName forKey:@"deviceName"];
                     
                     NSDictionary *metrics = @{
                                              @"duration": @([[sample objectForKey:@"duration"] intValue]),
