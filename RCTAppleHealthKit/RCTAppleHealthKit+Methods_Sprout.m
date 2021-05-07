@@ -460,96 +460,94 @@
 }
 
 - (void)sprout_exerciseMinutesQuery:(UIBackgroundTaskIdentifier)taskID {
-    NSCalendar *calendar = [NSCalendar currentCalendar];
-    NSDateComponents *interval = [[NSDateComponents alloc] init];
-    interval.day = 1;
-    NSDateComponents *anchorComponents = [calendar components:NSCalendarUnitDay | NSCalendarUnitMonth | NSCalendarUnitYear
-                                                     fromDate:[NSDate date]];
-    anchorComponents.hour = 0;
-    NSDate *anchorDate = [calendar dateFromComponents:anchorComponents];
-    HKQuantityType *quantityType = [HKObjectType quantityTypeForIdentifier:HKQuantityTypeIdentifierAppleExerciseTime];
-    
-    // Create the query
-    HKStatisticsCollectionQuery *query = [[HKStatisticsCollectionQuery alloc] initWithQuantityType:quantityType
-                                                                           quantitySamplePredicate:nil
-                                                                                           options:HKStatisticsOptionCumulativeSum | HKStatisticsOptionSeparateBySource
-                                                                                        anchorDate:anchorDate
-                                                                                intervalComponents:interval];
-    // Set the results handler
-    query.initialResultsHandler = ^(HKStatisticsCollectionQuery *query, HKStatisticsCollection *results, NSError *error) {
-        if (error) {
-            // Perform proper error handling here
-            NSLog(@"*** An error occurred while calculating the statistics: %@ ***",error.localizedDescription);
-            if (taskID != UIBackgroundTaskInvalid) {
-                NSLog(@"HealthKit native endBackgroundTask");
-                [[UIApplication sharedApplication] endBackgroundTask:taskID];
-            }
-            return;
-        }
-        
-        NSDate *endDate = [NSDate date];
-        NSDate *startDate = [calendar dateByAddingUnit:NSCalendarUnitDay value:-7 toDate:endDate options:0];
-        
-        NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
-        NSLocale *enUSPOSIXLocale = [NSLocale localeWithLocaleIdentifier:@"en_US_POSIX"];
-        [dateFormatter setLocale:enUSPOSIXLocale];
-        [dateFormatter setDateFormat:@"yyyy-MM-dd'T'HH:mm:ssZZZZZ"];
-        
-        NSMutableArray *activity = [[NSMutableArray alloc] init];
-        // Plot the daily step counts over the past 7 days
-        [results enumerateStatisticsFromDate:startDate toDate:endDate
-                                   withBlock:^(HKStatistics *result, BOOL *stop) {
-                                       HKQuantity *quantity = result.sumQuantity;
-                                       if (quantity) {
-                                           NSMutableDictionary *dayActivity = [[NSMutableDictionary alloc] init];
-                                           [dayActivity setObject:@"healthKit" forKey:@"source"];
-                                           [dayActivity setObject:@"active_minutes" forKey:@"type"];
-                                           [dayActivity setObject:@NO forKey:@"manual"];
-                                           
-                                           NSString *startDateString = [dateFormatter stringFromDate:result.startDate];
-                                           NSString *endDateString = [dateFormatter stringFromDate:result.endDate];
-                                           
-                                           [dayActivity setObject:startDateString forKey:@"startTime"];
-                                           [dayActivity setObject:endDateString forKey:@"endTime"];
-                                           [dayActivity setObject:[self getTimeOffsetString] forKey:@"offset"];
-
-                                           NSArray *sources = result.sources;
-                                           NSMutableArray *sourceNames = [NSMutableArray array];
-                                           for (HKSource *source in sources) {
-                                               [sourceNames addObject:source.name];
-                                           } 
-                                           [dayActivity setObject:sourceNames forKey:@"deviceName"];
-                                           
-                                           int minutesValue = (int)[quantity doubleValueForUnit:[HKUnit minuteUnit]];
-                                           
-                                           NSDictionary *metrics = [NSDictionary dictionaryWithObject:[NSNumber numberWithInt:minutesValue] forKey:@"medIntensity"];
-                                           [dayActivity setObject:metrics forKey:@"metrics"];
-                                           NSLog(@"%@: %d", startDateString, minutesValue);
-                                           
-                                           [activity addObject:dayActivity];
-                                       }
-                                   }
-        ];
-        
-        if ([activity count] > 0) {
-            NSDictionary *submitData = [NSDictionary dictionaryWithObject:activity forKey:@"activity"];
-            
-            NSMutableDictionary *submit = [[NSMutableDictionary alloc] init];
-            NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
-            NSInteger _vendorId = [defaults integerForKey:@"vendorId"];
-            NSString *_deviecId = [defaults stringForKey:@"deviceId"];
-            NSString *_sproutToken = [defaults stringForKey:@"token"];
-            NSString *_url = [defaults stringForKey:@"url"];
-
-            [submit setObject:submitData forKey:@"data"];
-            [submit setObject:_deviecId forKey:@"deviceId"];
-            [submit setObject:@"iOSHealth" forKey:@"vendorName"];
-            [submit setObject:[NSNumber numberWithUnsignedInteger:_vendorId] forKey:@"vendorId"];
-            [submit setObject:[NSNumber numberWithUnsignedInteger:1] forKey:@"background"];
-
-            [self sprout_postData:submit apiURL:_url sproutToken:_sproutToken taskID:taskID];
-        }
-    };
+	NSDate *startDate = [NSDate dateWithTimeIntervalSinceNow:(-1*24*60*60)];  // One day ago
+	NSDate *endDate = [NSDate date];
+	HKQuantityType *exerciseType = [HKQuantityType quantityTypeForIdentifier:HKQuantityTypeIdentifierAppleExerciseTime];
+	NSPredicate * predicate = [RCTAppleHealthKit predicateForSamplesBetweenDates:startDate endDate:endDate];
+	NSPredicate * fromDevices = [HKQuery predicateForObjectsWithDeviceProperty:HKDevicePropertyKeyName allowedValues:[NSSet setWithObject:@"Apple Watch"]];
+	NSPredicate * fullPredicate = [NSCompoundPredicate andPredicateWithSubpredicates:@[predicate, fromDevices]];
+	
+	[self fetchQuantitySamplesOfType:exerciseType
+								unit:[HKUnit minuteUnit]
+						   predicate:fullPredicate
+						   ascending:false
+							   limit:HKObjectQueryNoLimit
+						  completion:^(NSArray *results, NSError *error) {
+		if(results){
+			NSMutableArray *activity = [[NSMutableArray alloc] init];
+			for (NSDictionary *sample in results) {
+				NSMutableDictionary *dayActivity = [[NSMutableDictionary alloc] init];
+				[dayActivity setObject:@"healthKit" forKey:@"source"];
+				[dayActivity setObject:@"active_minutes" forKey:@"type"];
+				[dayActivity setObject:@NO forKey:@"manual"];
+				
+				NSString *startDateString = [sample valueForKey:@"startDate"];
+				NSString *endDateString = [sample valueForKey:@"endDate"];
+				
+				[dayActivity setObject:startDateString forKey:@"startTime"];
+				[dayActivity setObject:endDateString forKey:@"endTime"];
+				[dayActivity setObject:[self getTimeOffsetString] forKey:@"offset"];
+				
+				NSDictionary *deviceInfo = [sample objectForKey:@"deviceInfo"];
+				if (deviceInfo) {
+					NSString *sourceName = [deviceInfo objectForKey:@"sourceName"];
+					NSString *productType = [deviceInfo objectForKey:@"productType"];
+					
+					NSMutableString *deviceName = [[NSMutableString alloc] init];
+					if (productType && sourceName) {
+						[deviceName appendString:productType];
+						[deviceName appendString:@" - "];
+						[deviceName appendString:sourceName];
+					} else if (productType) {
+						deviceName = [NSMutableString stringWithString:productType];
+					} else if (sourceName) {
+						deviceName = [NSMutableString stringWithString:sourceName];
+					} else {
+						deviceName = [NSMutableString stringWithString:@"Apple Health"];
+					}
+					[dayActivity setObject:deviceName forKey:@"deviceName"];
+				} else {
+					NSString *deviceName = @"Apple Health";
+					[dayActivity setObject:deviceName forKey:@"deviceName"];
+				}
+				
+				int minutesValue = [[sample objectForKey:@"value"] intValue];
+				
+				NSDictionary *metrics = [NSDictionary dictionaryWithObject:[NSNumber numberWithInt:minutesValue] forKey:@"medIntensity"];
+				[dayActivity setObject:metrics forKey:@"metrics"];
+				NSLog(@"%@: %d", startDateString, minutesValue);
+				
+				[activity addObject:dayActivity];
+			}
+			if ([activity count] > 0) {
+				NSDictionary *submitData = [NSDictionary dictionaryWithObject:activity forKey:@"activity"];
+				
+				NSMutableDictionary *submit = [[NSMutableDictionary alloc] init];
+				NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+				NSInteger _vendorId = [defaults integerForKey:@"vendorId"];
+				NSString *_deviecId = [defaults stringForKey:@"deviceId"];
+				NSString *_sproutToken = [defaults stringForKey:@"token"];
+				NSString *_url = [defaults stringForKey:@"url"];
+				
+				[submit setObject:submitData forKey:@"data"];
+				[submit setObject:_deviecId forKey:@"deviceId"];
+				[submit setObject:@"iOSHealth" forKey:@"vendorName"];
+				[submit setObject:[NSNumber numberWithUnsignedInteger:_vendorId] forKey:@"vendorId"];
+				[submit setObject:[NSNumber numberWithUnsignedInteger:1] forKey:@"background"];
+				
+				[self sprout_postData:submit apiURL:_url sproutToken:_sproutToken taskID:taskID];
+			}
+			return;
+		} else {
+			// Perform proper error handling here
+			NSLog(@"*** An error occurred while getting active minutes in background: %@ ***",error.localizedDescription);
+			if (taskID != UIBackgroundTaskInvalid) {
+				NSLog(@"HealthKit native endBackgroundTask");
+				[[UIApplication sharedApplication] endBackgroundTask:taskID];
+			}
+			return;
+		}
+	}];
 }
 
 - (void)sprout_postData:(NSDictionary *)data apiURL:(NSString *)apiURL sproutToken:(NSString*)sproutToken taskID:(UIBackgroundTaskIdentifier)taskID {
