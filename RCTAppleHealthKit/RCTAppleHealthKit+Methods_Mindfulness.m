@@ -72,10 +72,13 @@
             NSTimeInterval secondsBetween = [sample.endDate timeIntervalSinceDate:sample.startDate];
             NSInteger duration = secondsBetween;
 
+            NSDictionary *deviceInfo = [self deviceInfoForSample:sample];
+
             NSDictionary *elem = @{
                     @"startDate" : startDateString,
                     @"endDate" : endDateString,
-                    @"duration" : [NSNumber numberWithInt:duration]
+                    @"duration" : [NSNumber numberWithInt:duration],
+                    @"deviceInfo" : deviceInfo
             };
 
             [data addObject:elem];
