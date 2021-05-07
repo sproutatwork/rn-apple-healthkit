@@ -830,7 +830,7 @@
 
 
 - (NSDictionary *)deviceInfoForSample:(HKSample *)sample {
-    if (sample) {
+    if (sample && [sample isKindOfClass:[HKSample class]]) {
         NSString *deviceName = @"";
         if ([sample device]) {
             deviceName = [[sample device] name];
@@ -839,10 +839,18 @@
         if ([sample device]) {
             deviceModel = [[sample device] model];
         }
+        NSString *sourceName = @"";
+        if ([[[sample sourceRevision] source] name]) {
+            sourceName = [[[sample sourceRevision] source] name];
+        }
+        NSString *productType = @"";
+        if ([[sample sourceRevision] productType]) {
+            productType = [[sample sourceRevision] productType];
+        }
 
         NSDictionary *deviceInfo = @{
-            @"sourceName" : [[[sample sourceRevision] source] name],
-            @"productType" : [[sample sourceRevision] productType],
+            @"sourceName" : sourceName,
+            @"productType" : productType,
             @"deviceName" : deviceName,
             @"deviceModel" : deviceModel
             };
