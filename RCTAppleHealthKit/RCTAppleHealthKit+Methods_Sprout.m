@@ -302,10 +302,10 @@
                     [activity setObject:endDateString forKey:@"endTime"];
                     [activity setObject:[self getTimeOffsetString] forKey:@"offset"];
 
-                    HKSourceRevision *sourceRevision = [sample objectForKey:@"sourceRevision"];
-                    if (sourceRevision) {
-                        NSString *sourceName = [[sourceRevision source] name];
-			            NSString *productType = [sourceRevision productType];  
+                    NSDictionary *deviceInfo = [sample objectForKey:@"deviceInfo"];
+                    if (deviceInfo) {
+                        NSString *sourceName = [deviceInfo valueForKey:@"sourceName"];
+			            NSString *productType = [deviceInfo valueForKey:@"productType"];  
 
                         NSMutableString *deviceName = [[NSMutableString alloc] init];
                         if (productType && sourceName) {
