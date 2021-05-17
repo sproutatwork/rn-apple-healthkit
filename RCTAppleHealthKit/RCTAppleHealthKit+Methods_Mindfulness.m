@@ -65,14 +65,20 @@
             }
             NSMutableArray *data = [NSMutableArray arrayWithCapacity:(10)];
 
-            for (HKQuantitySample *sample in results) {
+            for (HKCategorySample *sample in results) {
             NSLog(@"sample for mindfulsession %@", sample);
             NSString *startDateString = [RCTAppleHealthKit buildISO8601StringFromDate:sample.startDate];
             NSString *endDateString = [RCTAppleHealthKit buildISO8601StringFromDate:sample.endDate];
+            NSTimeInterval secondsBetween = [sample.endDate timeIntervalSinceDate:sample.startDate];
+            NSInteger duration = secondsBetween;
+
+            NSDictionary *deviceInfo = [self deviceInfoForSample:sample];
 
             NSDictionary *elem = @{
                     @"startDate" : startDateString,
                     @"endDate" : endDateString,
+                    @"duration" : [NSNumber numberWithInt:duration],
+                    @"deviceInfo" : deviceInfo
             };
 
             [data addObject:elem];
