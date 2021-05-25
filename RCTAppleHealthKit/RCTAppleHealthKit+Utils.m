@@ -325,9 +325,9 @@
         case HKWorkoutActivityTypeDance:
             return @"Dance";
         case HKWorkoutActivityTypeCardioDance:
-            return @"Dance"
+            return @"Dance";
         case HKWorkoutActivityTypeSocialDance:
-            return @"Dance"
+            return @"Dance";
         case HKWorkoutActivityTypeDanceInspiredTraining:
             return @"DanceInspiredTraining";
         case HKWorkoutActivityTypeElliptical:
