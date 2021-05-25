@@ -31,6 +31,7 @@
                                     @"Bowling": @"hobbies",
                                     @"Boxing": @"boxing",
                                     @"Climbing": @"rock_climbing",
+                                    @"Cooldown": @"stretch",
                                     @"CoreTraining": @"strength_training",
                                     @"Cricket": @"cricket",
                                     @"CrossCountrySkiing": @"skiing_cross_country",

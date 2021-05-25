@@ -426,6 +426,8 @@
             return @"DownhillSkiing";
         case HKWorkoutActivityTypeFlexibility:
             return @"Flexibility";
+        case HKWorkoutActivityTypeCooldown:
+            return @"Cooldown";
         case HKWorkoutActivityTypeHighIntensityIntervalTraining:
             return @"HighIntensityIntervalTraining";
         case HKWorkoutActivityTypeJumpRope:
