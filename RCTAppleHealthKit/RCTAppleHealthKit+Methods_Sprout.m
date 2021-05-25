@@ -48,7 +48,7 @@
                                     @"Golf": @"golf",
                                     @"Gymnastics": @"individual_sport",
                                     @"Handball": @"team_sport",
-                                    @"HandCycling": @"cycling"
+                                    @"HandCycling": @"cycling",
                                     @"HighIntensityIntervalTraining": @"HIIT",
                                     @"Hiking": @"hiking",
                                     @"Hockey": @"hockey",
