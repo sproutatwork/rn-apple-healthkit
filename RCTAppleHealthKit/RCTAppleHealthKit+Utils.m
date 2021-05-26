@@ -324,6 +324,10 @@
             return @"Cycling";
         case HKWorkoutActivityTypeDance:
             return @"Dance";
+        case HKWorkoutActivityTypeCardioDance:
+            return @"Dance";
+        case HKWorkoutActivityTypeSocialDance:
+            return @"Dance";
         case HKWorkoutActivityTypeDanceInspiredTraining:
             return @"DanceInspiredTraining";
         case HKWorkoutActivityTypeElliptical:
@@ -422,6 +426,8 @@
             return @"DownhillSkiing";
         case HKWorkoutActivityTypeFlexibility:
             return @"Flexibility";
+        case HKWorkoutActivityTypeCooldown:
+            return @"Cooldown";
         case HKWorkoutActivityTypeHighIntensityIntervalTraining:
             return @"HighIntensityIntervalTraining";
         case HKWorkoutActivityTypeJumpRope:
