@@ -838,11 +838,11 @@
 - (NSDictionary *)deviceInfoForSample:(HKSample *)sample {
     if (sample && [sample isKindOfClass:[HKSample class]]) {
         NSString *deviceName = @"";
-        if ([sample device]) {
+        if ([[sample device] name]) {
             deviceName = [[sample device] name];
         }
         NSString *deviceModel = @"";
-        if ([sample device]) {
+        if ([[sample device] model]) {
             deviceModel = [[sample device] model];
         }
         NSString *sourceName = @"";
